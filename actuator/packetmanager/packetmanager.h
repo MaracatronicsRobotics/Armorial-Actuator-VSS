@@ -71,7 +71,7 @@ private:
     typedef struct{
         bool isYellow;
         int id;
-        double vx ,vy;
+        double wl, wr;
 
         bool isUpdated;
     } firaSim_robot;

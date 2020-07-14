@@ -27,8 +27,8 @@ PacketManager::PacketManager(const QString &name) : Actuator(name)
         for(int y = 0; y < QT_PLAYERS; y++){
             packets[x][y].id = y;
             packets[x][y].isYellow = x ? false : true;
-            packets[x][y].vx = 0.0;
-            packets[x][y].vy = 0.0;
+            packets[x][y].wl = 0.0;
+            packets[x][y].wr = 0.0;
 
             packets[x][y].isUpdated = false;
         }
@@ -44,8 +44,8 @@ void PacketManager::sendPacket(firaSim_robot robot){
 
     command->set_id(robot.id);
     command->set_yellowteam(robot.isYellow);
-    command->set_wheel_left(robot.vx);
-    command->set_wheel_right(robot.vy);
+    command->set_wheel_left(robot.wl);
+    command->set_wheel_right(robot.wr);
 
     std::string s;
     packet.SerializeToString(&s);
@@ -146,8 +146,30 @@ void PacketManager::setSpeed(quint8 teamNum, quint8 playerNum, float x, float y,
     // Save values
     _writeMutex.lock();
 
-    packets[teamNum][playerNum].vx    = x;
-    packets[teamNum][playerNum].vy    = y;
+    // x = vx desejada
+    // y = angular desejada
+
+    // equações pra transformar em vr e vl
+    /*
+     * Onde:
+     * L       = distancia entre as rodas
+     * r       = raio da roda
+     * VLinear = vx desejada
+     * w       = velocidade angular desejada
+     *
+     * (2 * VLinear)/r = Wr + Wl
+     * (w * L)/r       = Wr - Wl
+     * Wr              = (2 * Vlin + w * L)/(2 * r)
+     * Wl              = Wr - (w * L) / r
+    */
+
+    double L = 0.066;
+    double r = 0.016;
+    double wr = ((2 * x) + (L * y)) / (2 * r);
+    double wl = wr - ((L * y) / r);
+
+    packets[teamNum][playerNum].wl    = wl;
+    packets[teamNum][playerNum].wr    = wr;
     markPlayersAsUpdated(teamNum, playerNum);
     _writeMutex.unlock();
 }
