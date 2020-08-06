@@ -163,7 +163,7 @@ void PacketManager::setSpeed(quint8 teamNum, quint8 playerNum, float x, float y,
      * Wl              = Wr - (w * L) / r
     */
 
-    double L = 0.18;
+    double L = 0.075;
     double r = 0.0325;
     double wr = ((2 * x) + (L * y)) / (2 * r);
     double wl = wr - ((L * y) / r);
