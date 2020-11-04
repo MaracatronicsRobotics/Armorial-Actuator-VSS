@@ -60,7 +60,7 @@ private:
     void run();
 
     // Actuator inherit
-    void setSpeed(quint8 teamNum, quint8 playerNum, float x, float y, float theta = 0.0);
+    void setSpeed(quint8 teamNum, quint8 playerNum, float wl, float wr, float theta = 0.0);
     void kick(quint8 teamNum, quint8 playerNum, float power);
     void chipKick(quint8 teamNum, quint8 playerNum, float power);
     void kickOnTouch(quint8 teamNum, quint8 playerNum, bool enable, float power);

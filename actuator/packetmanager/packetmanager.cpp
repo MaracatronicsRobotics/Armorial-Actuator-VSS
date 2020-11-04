@@ -142,34 +142,12 @@ bool PacketManager::isConnected() const {
     return (_socket.isOpen() && Actuator::isConnected());
 }
 
-void PacketManager::setSpeed(quint8 teamNum, quint8 playerNum, float x, float y, float theta) {
+void PacketManager::setSpeed(quint8 teamNum, quint8 playerNum, float wl, float wr, float theta) {
     // Save values
     _writeMutex.lock();
 
-    // x = vx desejada
-    // y = angular desejada
-
-    // equações pra transformar em vr e vl
-    /*
-     * Onde:
-     * L       = distancia entre as rodas
-     * r       = raio da roda
-     * VLinear = vx desejada
-     * w       = velocidade angular desejada
-     *
-     * (2 * VLinear)/r = Wr + Wl
-     * (w * L)/r       = Wr - Wl
-     * Wr              = (2 * Vlin + w * L)/(2 * r)
-     * Wl              = Wr - (w * L) / r
-    */
-
-    double L = 0.075;
-    double r = 0.0325;
-    double wr = ((2 * x) + (L * y)) / (2 * r);
-    double wl = wr - ((L * y) / r);
-
-    packets[teamNum][playerNum].wl    = wl;
-    packets[teamNum][playerNum].wr    = wr;
+    packets[teamNum][playerNum].wl    = static_cast<double>(wl);
+    packets[teamNum][playerNum].wr    = static_cast<double>(wr);
     markPlayersAsUpdated(teamNum, playerNum);
     _writeMutex.unlock();
 }
