@@ -39,8 +39,37 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     ExitHandler::setup(&a);
 
+    // Command line parser, get arguments
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Actuator VSS application help.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("actuatorAddress", "Sets the address that the application will send info. (default is 127.0.0.1)");
+    parser.addPositionalArgument("actuatorPort", "Sets the port that the application will send info. (default is 20011)");
+    parser.process(a);
+    QStringList args = parser.positionalArguments();
+
+    int firaPort = 20011;
+    std::string firaAddress = "127.0.0.1";
+
+    if(args.size() >= 1){
+        std::string firaAdd = args.at(0).toStdString();
+        firaAddress = firaAdd;
+    }
+
+    if(args.size() >= 2){
+        int port = args.at(1).toInt();
+
+        if(port < 1 || port > 65535){
+            std::cout << "[ERROR] Invalid port: " << port << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        firaPort = port;
+    }
+
     PacketManager packetManager("Armorial-Actuator-VSS");
-    packetManager.connect(BACKBONE_ADDRESS, BACKBONE_PORT, FIRASIM_ADDRESS, FIRASIM_PORT);
+    packetManager.connect(BACKBONE_ADDRESS, BACKBONE_PORT, QString(firaAddress.c_str()), static_cast<quint16>(firaPort));
     packetManager.setLoopFrequency(LOOP_FREQUENCY);
     packetManager.start();
 

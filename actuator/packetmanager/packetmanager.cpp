@@ -124,7 +124,7 @@ bool PacketManager::connect(const QString& serverAddress, const uint16 serverPor
         _socket.close();
     _socket.connectToHost(firaSimAddress, firaSimPort, QIODevice::WriteOnly, QAbstractSocket::IPv4Protocol);
 
-    std::cout << "[Armorial-Actuator] Connected!" << std::endl;
+    std::cout << "[Armorial-Actuator] Connected in address " << firaSimAddress.toStdString() << " and port " << firaSimPort << std::endl;
 
     return true;
 }
