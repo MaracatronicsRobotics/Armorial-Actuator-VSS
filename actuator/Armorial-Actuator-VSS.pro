@@ -30,6 +30,8 @@ LIBS *= -lprotobuf -lGLU -pthread -lGEARSystem -lomniORB4 -lomnithread -lQt5Core
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+system(echo "compiling protobuf" && cd include/3rd_party/protobuf && protoc --cpp_out=../ *.proto && cd ../../..)
+
 SOURCES += \
         exithandler.cpp \
         include/3rd_party/command.pb.cc \
